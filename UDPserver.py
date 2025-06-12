@@ -61,3 +61,33 @@ def handle_client_request(filename, client_address, server_socket):
 
     except Exception as e:
         print(f"Thread processing error: {e}")
+
+def main():
+    # Parse the command-line arguments
+    import sys
+    if len(sys.argv) != 2:
+        print("Usage: python3 UDPserver.py <port>")
+        sys.exit(1)
+    port = int(sys.argv[1])
+
+    # Create the main UDP socket to listen for DOWNLOAD requests
+    server_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    server_socket.bind(('', port))
+    print(f"Server started, listening on port {port}")
+
+    # Main loop to handle client requests
+    while True:
+        try:
+            data, client_address = server_socket.recvfrom(1024)
+            message = data.decode()
+            if message.startswith("DOWNLOAD"):
+                filename = message.split()[1]
+                # Create a new thread for each DOWNLOAD request
+                thread = threading.Thread(target=handle_client_request, args=(filename, client_address, server_socket))
+                thread.start()
+                print(f"Processing client {client_address}'s request: {filename}")
+        except Exception as e:
+            print(f"Server error: {e}")
+
+if __name__ == "__main__":
+    main()
