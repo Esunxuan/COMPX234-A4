@@ -5,6 +5,22 @@ import base64
 import random
 
 def handle_client_request(filename, client_address, server_socket):
+    """
+        Handle client requests for file transfer in a dedicated thread.
+        
+        Args:
+            filename (str): Name of the requested file.
+            client_address (tuple): Client's address (host, port).
+            server_socket (socket): Main server socket for initial communication.
+        
+        Steps:
+            1. Validate file existence.
+            2. Allocate a random high-order port for data transfer.
+            3. Send initial response with file metadata.
+            4. Handle segmented file requests until client closes connection.
+        """
+    
+    
     # Worker thread to handle the client's file transfer request
     # Randomly select a high-order port (50000 - 51000)
     port = random.randint(50000, 51000)
@@ -63,6 +79,16 @@ def handle_client_request(filename, client_address, server_socket):
         print(f"Thread processing error: {e}")
 
 def main():
+    """
+        Main server function.
+        
+        Steps:
+            1. Parse command-line arguments.
+            2. Initialize main UDP socket.
+            3. Listen for DOWNLOAD requests.
+            4. Spawn threads to handle concurrent client requests.
+    """
+
     # Parse the command-line arguments
     import sys
     if len(sys.argv) != 2:
