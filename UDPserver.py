@@ -5,7 +5,20 @@ import base64
 import random
 
 def handle_client_request(filename, client_address, server_socket):
-    
+    """
+        Handle client requests for file transfer in a dedicated thread.
+        
+        Args:
+            filename (str): Name of the requested file.
+            client_address (tuple): Client's address (host, port).
+            server_socket (socket): Main server socket for initial communication.
+        
+        Steps:
+            1. Try to bind an available port for data transfer (up to 3 attempts).
+            2. Check if the file exists and is readable.
+            3. Send the file size and data port information to the client.
+            4. Handle file chunk requests from the client until the client closes the connection.
+        """
     for attempt in range(3):
         port = random.randint(50000, 51000)
         try:
@@ -72,7 +85,14 @@ def handle_client_request(filename, client_address, server_socket):
 def main():
     
 
-    # Parse the command-line arguments
+    """
+        Main function to start the UDP server.
+        
+        Steps:
+            1. Validate command-line arguments.
+            2. Bind the server socket to the specified port.
+            3. Listen for client requests and handle them in separate threads.
+    """
     import sys
     if len(sys.argv) != 2:
         print("Usage: python3 UDPserver.py <port>")

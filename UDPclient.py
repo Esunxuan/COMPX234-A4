@@ -5,22 +5,45 @@ import time
 import os
 
 def send_and_receive(sock, message, server_address, timeout=2, max_retries=3):
+    """
+        Send a message to the server and receive a response.
+        
+        Args:
+            sock (socket): Socket used for communication.
+            message (str): Message to send to the server.
+            server_address (tuple): Server's address (host, port).
+            timeout (int): Initial timeout value for receiving a response.
+            max_retries (int): Maximum number of retry attempts.
+        
+        Returns:
+            str: Decoded response from the server, or None if no response is received.
+        """
     for attempt in range(max_retries):
-        try:
+         try:
             sock.sendto(message.encode(), server_address)
             sock.settimeout(timeout * (attempt + 1))
             response, _ = sock.recvfrom(4096)
             return response.decode().strip()
-        except socket.timeout:
+         except socket.timeout:
             print(f"[RETRY] Timeout (attempt {attempt + 1})")
-        except Exception as e:
+         except Exception as e:
             print(f"[ERROR] Communication error: {str(e)}")
             break
     return None
 
 
 def download_file(control_sock, filename, server_address):
-    
+    """
+        Download a file from the server.
+        
+        Args:
+            control_sock (socket): Socket used for control communication.
+            filename (str): Name of the file to download.
+            server_address (tuple): Server's address (host, port).
+        
+        Returns:
+            bool: True if the file is downloaded successfully, False otherwise.
+        """
     response = send_and_receive(control_sock, f"DOWNLOAD {filename}", server_address)
     if not response:
         print(f"[FAILED] No response for {filename}")
@@ -86,7 +109,14 @@ def download_file(control_sock, filename, server_address):
             return False
 
 def main():
-    
+    """
+        Main function to start the UDP client.
+        
+        Steps:
+            1. Validate command-line arguments.
+            2. Read the list of files to download from a file.
+            3. Download each file from the server.
+        """
     # Parse command-line arguments
     if len(sys.argv) != 4:
         print("Usage: python3 UDPclient.py <hostname> <port> <files.txt>")
