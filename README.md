@@ -16,7 +16,7 @@ Hash                             Path
 95C1D205CCD51C1595B78F73992BEC9E F:\作业\系统与网络\COMPX234-A4\Server\test2.jpg
 3C289230FEFDC127C4C7DEAE2386A288 F:\作业\系统与网络\COMPX234-A4\Server\test3.mp4
 
-以下是根据代码修改后的英文版本解释：
+
 
 ### Brief Explanation of Server and Client Implementation
 
